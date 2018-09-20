@@ -13,6 +13,16 @@ router.get('/api/chords', async (ctx, next) => {
   ctx.response.body = result.rows
 });
 
+router.get('/api/chords/:id', async (ctx, next) => {
+  const result = await client.query("select ID, info->'artist_name' artist_name, info->'song_name' song_name, tab_content lyrics from chords where ID = $1 limit 1", [ctx.params.id])
+  ctx.response.status = result.rows.length === 0
+    ? 404
+    : 200
+  ctx.response.body = result.rows.length === 0
+    ? 'Chord not found'
+    : result.rows[0]
+})
+
 app
   .use(router.routes())
   .use(router.allowedMethods())
