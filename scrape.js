@@ -54,16 +54,19 @@ async function transferTabs() {
 
 async function init() {
   await client.connect()
-  await client.query(`
-  CREATE TABLE IF NOT EXISTS public.chords
-  (
-      id SERIAL NOT NULL PRIMARY KEY,
-      info json NOT NULL,
-      tab_content text NULL
-  )
-  `)
-  await run()
-  await client.end()
+  try {
+    await client.query(`
+    CREATE TABLE IF NOT EXISTS public.chords
+    (
+        id SERIAL NOT NULL PRIMARY KEY,
+        info json NOT NULL,
+        tab_content text NULL
+    )
+    `)
+    await run()
+  } finally {
+    await client.end()
+  }
 }
 
 async function run() {
