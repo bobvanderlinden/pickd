@@ -1,7 +1,6 @@
 const request = require('request-promise-native')
 const fs = require('fs')
 const { Client } = require('pg')
-const cheerio = require('cheerio')
 const client = new Client({
   connectionString: process.env.DATABASE_URL
 })
