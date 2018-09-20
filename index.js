@@ -39,6 +39,7 @@ router.get('/api/chords', async (ctx, next) => {
     select ID, info->'artist_name' artist_name, info->'song_name' song_name, tab_content lyrics
     from chords songs
     ${where([
+      ctx.query.query && ctx.query.query.split(' ').map(word => `%${word}%`).map(sqlParameter).map(sqlParam => `(info->>'artist_name' ilike ${sqlParam} or info->>'song_name' ilike ${sqlParam})`).join(' and '),
       ctx.query.chord && (() => {
         const chordSqlParameters = array(ctx.query.chord).map(sqlParameter).join(', ')
         return `exists (select chord_code from song_chords where song_id = songs.id and song_chords.chord_code in (${chordSqlParameters})) and not exists (select chord_code from song_chords where song_id = songs.id and song_chords.chord_code not in (${chordSqlParameters}))`
