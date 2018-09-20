@@ -39,7 +39,7 @@ async function transferChords() {
 }
 
 async function transferTabs() {
-  const result = await client.query("select ID, info->'tab_url' tab_url from chords")
+  const result = await client.query("select ID, info->'tab_url' tab_url from chords where tab_content is null")
   for (let row of result.rows) {
     const chordId = row.id
     const tabUrl = row.tab_url
