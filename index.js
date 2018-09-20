@@ -1,5 +1,6 @@
 const Koa = require('koa')
 const Router = require('koa-router')
+const cors = require('@koa/cors');
 const { Client } = require('pg')
 const client = new Client({
   connectionString: process.env.DATABASE_URL
@@ -24,6 +25,7 @@ router.get('/api/chords/:id', async (ctx, next) => {
 })
 
 app
+  .use(cors())
   .use(router.routes())
   .use(router.allowedMethods())
 
