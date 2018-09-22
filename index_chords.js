@@ -1,13 +1,10 @@
 const Koa = require('koa')
 const Router = require('koa-router')
 const cors = require('@koa/cors');
-const { Client } = require('pg')
-const client = new Client({
-  connectionString: process.env.DATABASE_URL
-})
+const db = require('./db')
 
-async function run() {
-  const result = await client.query('select ID, tab_content lyrics from chords where ID not in (select song_id from song_chords)')
+async function run(client) {
+  const result = await client.query('select ID, tab_content lyrics from songs where ID not in (select song_id from song_chords)')
   for (let song of result.rows) {
     const songId = song.id
     const lyrics = song.lyrics
@@ -27,9 +24,7 @@ async function run() {
 }
 
 async function init() {
-  await client.connect()
-  await run()
-  await client.end()
+  await db.use(run)
 }
 
 init().then().catch(err => {
